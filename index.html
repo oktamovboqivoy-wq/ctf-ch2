@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forensic Recovery Console - Challenge 2</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --primary: #00eaff;
+      --secondary: #ff3b3b;
+      --panel: rgba(2, 10, 32, 0.72);
+      --grid: rgba(0, 234, 255, 0.08);
+      --glow: rgba(0, 234, 255, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: radial-gradient(circle at top, #0a1b3f 0%, var(--bg) 40%, #01030a 100%);
+      color: var(--primary);
+      font-family: "Fira Code", "Courier New", Courier, monospace;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 34px 34px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 18%, rgba(0, 234, 255, 0.15), transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .forensic-console {
+      width: min(840px, 96vw);
+      border: 1px solid rgba(0, 234, 255, 0.28);
+      background: linear-gradient(180deg, rgba(4, 19, 51, 0.76) 0%, var(--panel) 100%);
+      border-radius: 12px;
+      padding: clamp(1.2rem, 2vw, 2rem);
+      box-shadow:
+        0 0 0 1px rgba(0, 234, 255, 0.1) inset,
+        0 0 18px var(--glow),
+        0 0 45px rgba(0, 234, 255, 0.2);
+      position: relative;
+      z-index: 1;
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+    }
+
+    p {
+      margin: 0;
+      font-size: clamp(0.96rem, 1.7vw, 1.1rem);
+    }
+
+    .warning {
+      color: var(--secondary);
+      margin-bottom: 1rem;
+      text-shadow: 0 0 8px rgba(255, 59, 59, 0.45);
+      font-weight: 700;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 0.35rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      min-height: 8.2rem;
+    }
+
+    .log-line {
+      white-space: pre;
+      text-shadow: 0 0 8px rgba(0, 234, 255, 0.28);
+    }
+
+    .ready-line {
+      margin-top: 1rem;
+      color: #b8f8ff;
+      text-shadow: 0 0 9px rgba(0, 234, 255, 0.5);
+    }
+
+    .download-wrap {
+      margin-top: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .download-btn {
+      display: inline-block;
+      text-decoration: none;
+      color: #00121a;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 0.72rem 1.1rem;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #6bfbff 0%, var(--primary) 100%);
+      border: 1px solid rgba(0, 234, 255, 0.8);
+      box-shadow: 0 0 14px rgba(0, 234, 255, 0.55);
+      transition: transform 120ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+
+    .download-btn:hover,
+    .download-btn:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow: 0 0 20px rgba(0, 234, 255, 0.78), 0 0 40px rgba(0, 234, 255, 0.35);
+      outline: none;
+    }
+
+    .hint {
+      color: #8cecff;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <main class="forensic-console" aria-label="forensic data recovery interface">
+    <p class="warning">&gt; file integrity compromised...</p>
+
+    <ul class="log-list" id="logs" aria-live="polite"></ul>
+
+    <p class="ready-line">&gt; file ready: challenge2.docx</p>
+
+    <div class="download-wrap">
+      <a class="download-btn" href="challenge2.docx" download>[ DOWNLOAD FILE ]</a>
+    </div>
+
+    <p class="hint">&gt; not everything is visible...</p>
+  </main>
+
+  <script>
+    const lines = [
+      "> scanning recovered data...",
+      "> fragment detected",
+      "> reconstructing structure...",
+      "> exporting document..."
+    ];
+
+    const logs = document.getElementById("logs");
+    const charDelay = 28;
+    const lineDelay = 320;
+
+    async function typeLine(text) {
+      const item = document.createElement("li");
+      item.className = "log-line";
+      logs.appendChild(item);
+
+      for (let i = 0; i <= text.length; i++) {
+        item.textContent = text.slice(0, i);
+        await new Promise((resolve) => setTimeout(resolve, charDelay));
+      }
+    }
+
+    async function runTyping() {
+      for (const line of lines) {
+        await typeLine(line);
+        await new Promise((resolve) => setTimeout(resolve, lineDelay));
+      }
+    }
+
+    runTyping();
+  </script>
+</body>
+</html>
